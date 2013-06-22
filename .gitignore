@@ -1,0 +1,7 @@
+*.pyc
+*.py~
+*.*~
+sftp-config*.json
+*.sass-cache
+
+docs/_*
