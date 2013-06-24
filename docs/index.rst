@@ -11,7 +11,7 @@ django-notifier
 
 It can support multiple methods of sending notifications and provides methods to manage user preferences as well as group settings for notifications. `email` notifications are supported out of the box using django's email settings, additional methods of sending notification (Backends) can be added as required to support `SMS`, `phone` or even `snail mail`.
 
-The general idea is to reduce the overhead of setting up notifications for different actions (payment processed, new membwership, daily update) and making it easy to use the same backend for all kinds of notifications.
+The general idea is to reduce the overhead of setting up notifications for different actions (payment processed, new membership, daily update) and making it easy to use the same backend for all kinds of notifications.
 
 
 Contents

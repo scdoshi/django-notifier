@@ -2,7 +2,6 @@
 Installation & Setup
 ====================
 
-
 Installation
 ============
 
@@ -35,7 +34,7 @@ Setup
 
 2. Settings
 
-    If you are going to use any custom backends to send notifications, add the setting NOTIFIER_BACKENDS to your settings file. By default (if the setting is not defined), only the inscluded EmailBackend is considered.
+    If you are going to use any custom backends to send notifications, add the setting NOTIFIER_BACKENDS to your settings file. If this setting is not defined, only the EmailBackend is used by default.
 
     ::
 
@@ -45,7 +44,7 @@ Setup
         )
 
 
-3. Run ``syncdb`` or ``migrate`` (if using South) to create the necesarry tables in the database.
+3. Run ``syncdb`` or ``migrate`` (if using South) to create the necessary tables in the database.
     
     ::
 
