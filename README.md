@@ -1,7 +1,8 @@
 django-notifier
 ===============
 
-Django app to manage notification preferences and permissions per user or group.
+Send notifications (Email, SMS etc) and manage preferences and permissions per user and group.
+
 
 To register a notification:
 notifier.create_notification('test-notification')

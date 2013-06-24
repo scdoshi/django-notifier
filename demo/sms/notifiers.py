@@ -3,7 +3,7 @@
 ###############################################################################
 from django.conf import settings
 from django.template.loader import render_to_string
-from notifier.backends import Backend
+from notifier.backends import BaseBackend
 from twilio.rest import TwilioRestClient
 
 
@@ -16,17 +16,15 @@ TWILIO_FROM_NUMBER = getattr(settings, 'TWILIO_FROM_NUMBER', None)
 client = TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
 
-class TwilioBackend(Backend):
+class TwilioBackend(BaseBackend):
     name = 'sms-twilio'
     display_name = 'SMS'
     description = 'Send via SMS using Twilio'
 
-    def send(self, user, context={}):
-        context.update({
-            'user': self.user
-        })
+    def send(self, user, context=None):
+        super(TwilioBackend, self).send(user, context)
 
-        message = render_to_string(self.template, context)
+        message = render_to_string(self.template, self.context)
 
         sms = client.sms.messages.create(
             to=user.phone,
