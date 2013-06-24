@@ -16,7 +16,7 @@ except ImportError:
     South = False
 
 # User
-from notifier.models import Notifier
+from notifier.models import Backend
 from notifier import settings as notifier_settings
 
 
@@ -34,18 +34,18 @@ def create_backends(app, **kwargs):
     if not app == 'notifier':
         return
 
-    for backend in notifier_settings.BACKEND_CLASSES:
+    for klass in notifier_settings.BACKEND_CLASSES:
         try:
-            notifier = Notifier.objects.get(name=backend.name)
-        except Notifier.DoesNotExist:
-            notifier = Notifier()
-            notifier.enabled = True
+            backend = Backend.objects.get(name=klass.name)
+        except Backend.DoesNotExist:
+            backend = Backend()
+            backend.enabled = True
         finally:
-            notifier.display_name = backend.display_name
-            notifier.name = backend.name
-            notifier.description = backend.description
-            notifier.klass = ('.'.join([backend.__module__, backend.__name__]))
-            notifier.save()
+            backend.display_name = klass.display_name
+            backend.name = klass.name
+            backend.description = klass.description
+            backend.klass = ('.'.join([klass.__module__, klass.__name__]))
+            backend.save()
 
 
 def create_notifications(app, **kwargs):

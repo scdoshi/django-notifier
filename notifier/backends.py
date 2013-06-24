@@ -14,7 +14,7 @@ from django.template.loader import render_to_string
 ###############################################################################
 ## Code
 ###############################################################################
-class Backend(object):
+class BaseBackend(object):
     # Name of backend method associated with this class
     name = None
     display_name = None
@@ -27,10 +27,18 @@ class Backend(object):
 
     # Define how to send the notification
     def send(self, user, context=None):
-        pass
+        if not context:
+            self.context = {}
+        else:
+            self.context = context
+
+        self.context.update({
+            'user': user,
+            'site': Site.objects.get_current()
+        })
 
 
-class EmailBackend(Backend):
+class EmailBackend(BaseBackend):
     name = 'email'
     display_name = 'Email'
     description = 'Send via email'
@@ -46,17 +54,11 @@ class EmailBackend(Backend):
         )
 
     def send(self, user, context=None):
-        if not context:
-            context = {}
+        super(EmailBackend, self).send(user, context)
 
-        context.update({
-            'user': user,
-            'site': Site.objects.get_current()
-        })
-
-        subject = render_to_string(self.template_subject, context)
+        subject = render_to_string(self.template_subject, self.context)
         subject = ''.join(subject.splitlines())
-        message = render_to_string(self.template_message, context)
+        message = render_to_string(self.template_message, self.context)
 
         try:
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,

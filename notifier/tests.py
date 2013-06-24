@@ -10,7 +10,7 @@ from django.core import mail
 
 # User
 import notifier
-from notifier import get_permission_queryset
+from notifier import _get_permission_queryset
 from notifier import models
 
 
@@ -19,9 +19,9 @@ from notifier import models
 ###############################################################################
 class PreferencesTests(TestCase):
     def setUp(self):
-        self.email_notifier = models.Notifier.objects.get(name='email')
+        self.email_backend = models.Backend.objects.get(name='email')
 
-        self.sms_notifier = models.Notifier.objects.create(
+        self.sms_backend = models.Backend.objects.create(
             display_name='SMS',
             name='sms',
             enabled=True,
@@ -33,16 +33,16 @@ class PreferencesTests(TestCase):
             name='test-not-1',
             public=True,
         )
-        self.test1_notification.notifiers.add(
-            self.email_notifier, self.sms_notifier)
+        self.test1_notification.backends.add(
+            self.email_backend, self.sms_backend)
 
         self.test2_notification = models.Notification.objects.create(
             display_name='Test Notification 2',
             name='test-not-2',
             public=False,
         )
-        self.test2_notification.notifiers.add(
-            self.email_notifier)
+        self.test2_notification.backends.add(
+            self.email_backend)
 
         self.user1 = User.objects.create(
             username='user1',
@@ -58,7 +58,7 @@ class PreferencesTests(TestCase):
         models.GroupNotify.objects.create(
             group=self.group1,
             notification=self.test1_notification,
-            notifier=self.email_notifier,
+            backend=self.email_backend,
             notify=True
         )
 
@@ -66,11 +66,11 @@ class PreferencesTests(TestCase):
         """Test if group preference applies to user"""
         method_dict = self.test1_notification.get_user_prefs(user=self.user1)
 
-        # print models.Notifier.objects.values_list(
+        # print models.Backend.objects.values_list(
         #     'display_name', 'name', 'id')
         # print method_dict
 
-        self.assertEqual(method_dict[self.email_notifier], True,
+        self.assertEqual(method_dict[self.email_backend], True,
             msg='Group notification preference failed.')
 
     def test2UserPreference(self):
@@ -78,17 +78,17 @@ class PreferencesTests(TestCase):
         models.UserNotify.objects.create(
             user=self.user1,
             notification=self.test1_notification,
-            notifier=self.email_notifier,
+            backend=self.email_backend,
             notify=False
         )
 
         method_dict = self.test1_notification.get_user_prefs(user=self.user1)
 
-        # print models.Notifier.objects.values_list(
+        # print models.Backend.objects.values_list(
         #     'display_name', 'name', 'id')
         # print method_dict
 
-        self.assertEqual(method_dict[self.email_notifier], False,
+        self.assertEqual(method_dict[self.email_backend], False,
             msg='User notification preference failed.')
 
 
@@ -141,28 +141,28 @@ class PermissionTests(TestCase):
 
 class UtilityFunctionTests(TestCase):
     def test1GetPermissionQueryset(self):
-        """Test the notifier.get_permission_queryset function."""
+        """Test the notifier._get_permission_queryset function."""
         permissions = Permission.objects.filter(id__in=[1, 2])
 
         # Compare querysets after converting to lists, becuase different
         # instance of same queryset will not test as equal.
-        resp = get_permission_queryset(permissions)
+        resp = _get_permission_queryset(permissions)
         # print resp
         self.assertEqual(list(resp), list(permissions),
             msg='Queryset input failed')
 
-        resp = get_permission_queryset(permissions[0])
+        resp = _get_permission_queryset(permissions[0])
         # print resp
         self.assertEqual(resp, [permissions.get(id=1)],
             msg='Single object input failed')
 
-        resp = get_permission_queryset(
+        resp = _get_permission_queryset(
             list(permissions.values_list('codename', flat=True)))
         # print resp
         self.assertEqual(list(resp), list(permissions),
             msg='Permission codename list input failed')
 
-        resp = get_permission_queryset(permissions[0].codename)
+        resp = _get_permission_queryset(permissions[0].codename)
         # print resp
         self.assertEqual(list(resp), list(permissions.filter(id=1)),
             msg='Permission codename input failed')
@@ -175,20 +175,20 @@ class EmailTests(TestCase):
             email='user1@example.com'
         )
 
-        self.email_notifier = models.Notifier.objects.get(name='email')
+        self.email_backend = models.Backend.objects.get(name='email')
 
         self.test_notification = notifier.create_notification(
             'test-notification',
             display_name='Test',
             permissions=None,  # No permissions required
-            notifiers=None,  # Default notifier will be added ('Email')
+            backends=None,  # All backend will be added ('email')
             public=True
         )
 
         models.UserNotify.objects.create(
             user=self.user1,
             notification=self.test_notification,
-            notifier=self.email_notifier,
+            backend=self.email_backend,
             notify=True
         )
 

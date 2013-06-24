@@ -8,24 +8,24 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Notifier'
-        db.create_table(u'notifier_notifier', (
+        # Adding model 'Backend'
+        db.create_table(u'notifier_backend', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 21, 0, 0), db_index=True)),
-            ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 21, 0, 0), db_index=True)),
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 24, 0, 0), db_index=True)),
+            ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 24, 0, 0), db_index=True)),
             ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=200, db_index=True)),
             ('display_name', self.gf('django.db.models.fields.CharField')(max_length=200, null=True)),
             ('description', self.gf('django.db.models.fields.CharField')(max_length=500, null=True)),
             ('enabled', self.gf('django.db.models.fields.BooleanField')(default=True)),
             ('klass', self.gf('django.db.models.fields.CharField')(max_length=500)),
         ))
-        db.send_create_signal(u'notifier', ['Notifier'])
+        db.send_create_signal(u'notifier', ['Backend'])
 
         # Adding model 'Notification'
         db.create_table(u'notifier_notification', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 21, 0, 0), db_index=True)),
-            ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 21, 0, 0), db_index=True)),
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 24, 0, 0), db_index=True)),
+            ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 24, 0, 0), db_index=True)),
             ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=200, db_index=True)),
             ('display_name', self.gf('django.db.models.fields.CharField')(max_length=200)),
             ('public', self.gf('django.db.models.fields.BooleanField')(default=True)),
@@ -41,67 +41,67 @@ class Migration(SchemaMigration):
         ))
         db.create_unique(m2m_table_name, ['notification_id', 'permission_id'])
 
-        # Adding M2M table for field notifiers on 'Notification'
-        m2m_table_name = db.shorten_name(u'notifier_notification_notifiers')
+        # Adding M2M table for field backends on 'Notification'
+        m2m_table_name = db.shorten_name(u'notifier_notification_backends')
         db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
             ('notification', models.ForeignKey(orm[u'notifier.notification'], null=False)),
-            ('notifier', models.ForeignKey(orm[u'notifier.notifier'], null=False))
+            ('backend', models.ForeignKey(orm[u'notifier.backend'], null=False))
         ))
-        db.create_unique(m2m_table_name, ['notification_id', 'notifier_id'])
+        db.create_unique(m2m_table_name, ['notification_id', 'backend_id'])
 
         # Adding model 'GroupNotify'
         db.create_table(u'notifier_groupnotify', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 21, 0, 0), db_index=True)),
-            ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 21, 0, 0), db_index=True)),
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 24, 0, 0), db_index=True)),
+            ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 24, 0, 0), db_index=True)),
             ('group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.Group'])),
             ('notification', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['notifier.Notification'])),
-            ('notifier', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['notifier.Notifier'])),
+            ('backend', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['notifier.Backend'])),
             ('notify', self.gf('django.db.models.fields.BooleanField')(default=True)),
         ))
         db.send_create_signal(u'notifier', ['GroupNotify'])
 
-        # Adding unique constraint on 'GroupNotify', fields ['group', 'notification', 'notifier']
-        db.create_unique(u'notifier_groupnotify', ['group_id', 'notification_id', 'notifier_id'])
+        # Adding unique constraint on 'GroupNotify', fields ['group', 'notification', 'backend']
+        db.create_unique(u'notifier_groupnotify', ['group_id', 'notification_id', 'backend_id'])
 
         # Adding model 'UserNotify'
         db.create_table(u'notifier_usernotify', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 21, 0, 0), db_index=True)),
-            ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 21, 0, 0), db_index=True)),
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 24, 0, 0), db_index=True)),
+            ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 24, 0, 0), db_index=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('notification', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['notifier.Notification'])),
-            ('notifier', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['notifier.Notifier'])),
+            ('backend', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['notifier.Backend'])),
             ('notify', self.gf('django.db.models.fields.BooleanField')(default=True)),
         ))
         db.send_create_signal(u'notifier', ['UserNotify'])
 
-        # Adding unique constraint on 'UserNotify', fields ['user', 'notification', 'notifier']
-        db.create_unique(u'notifier_usernotify', ['user_id', 'notification_id', 'notifier_id'])
+        # Adding unique constraint on 'UserNotify', fields ['user', 'notification', 'backend']
+        db.create_unique(u'notifier_usernotify', ['user_id', 'notification_id', 'backend_id'])
 
         # Adding model 'SentNotification'
         db.create_table(u'notifier_sentnotification', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 21, 0, 0), db_index=True)),
-            ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 21, 0, 0), db_index=True)),
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 24, 0, 0), db_index=True)),
+            ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 24, 0, 0), db_index=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('notification', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['notifier.Notification'])),
-            ('notifier', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['notifier.Notifier'])),
+            ('backend', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['notifier.Backend'])),
             ('success', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
         db.send_create_signal(u'notifier', ['SentNotification'])
 
 
     def backwards(self, orm):
-        # Removing unique constraint on 'UserNotify', fields ['user', 'notification', 'notifier']
-        db.delete_unique(u'notifier_usernotify', ['user_id', 'notification_id', 'notifier_id'])
+        # Removing unique constraint on 'UserNotify', fields ['user', 'notification', 'backend']
+        db.delete_unique(u'notifier_usernotify', ['user_id', 'notification_id', 'backend_id'])
 
-        # Removing unique constraint on 'GroupNotify', fields ['group', 'notification', 'notifier']
-        db.delete_unique(u'notifier_groupnotify', ['group_id', 'notification_id', 'notifier_id'])
+        # Removing unique constraint on 'GroupNotify', fields ['group', 'notification', 'backend']
+        db.delete_unique(u'notifier_groupnotify', ['group_id', 'notification_id', 'backend_id'])
 
-        # Deleting model 'Notifier'
-        db.delete_table(u'notifier_notifier')
+        # Deleting model 'Backend'
+        db.delete_table(u'notifier_backend')
 
         # Deleting model 'Notification'
         db.delete_table(u'notifier_notification')
@@ -109,8 +109,8 @@ class Migration(SchemaMigration):
         # Removing M2M table for field permissions on 'Notification'
         db.delete_table(db.shorten_name(u'notifier_notification_permissions'))
 
-        # Removing M2M table for field notifiers on 'Notification'
-        db.delete_table(db.shorten_name(u'notifier_notification_notifiers'))
+        # Removing M2M table for field backends on 'Notification'
+        db.delete_table(db.shorten_name(u'notifier_notification_backends'))
 
         # Deleting model 'GroupNotify'
         db.delete_table(u'notifier_groupnotify')
@@ -159,56 +159,56 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        u'notifier.groupnotify': {
-            'Meta': {'unique_together': "(('group', 'notification', 'notifier'),)", 'object_name': 'GroupNotify'},
-            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 21, 0, 0)', 'db_index': 'True'}),
-            'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.Group']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'notification': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['notifier.Notification']"}),
-            'notifier': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['notifier.Notifier']"}),
-            'notify': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 21, 0, 0)', 'db_index': 'True'})
-        },
-        u'notifier.notification': {
-            'Meta': {'object_name': 'Notification'},
-            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 21, 0, 0)', 'db_index': 'True'}),
-            'display_name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200', 'db_index': 'True'}),
-            'notifiers': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['notifier.Notifier']", 'symmetrical': 'False', 'blank': 'True'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'public': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 21, 0, 0)', 'db_index': 'True'})
-        },
-        u'notifier.notifier': {
-            'Meta': {'object_name': 'Notifier'},
-            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 21, 0, 0)', 'db_index': 'True'}),
+        u'notifier.backend': {
+            'Meta': {'object_name': 'Backend'},
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 24, 0, 0)', 'db_index': 'True'}),
             'description': ('django.db.models.fields.CharField', [], {'max_length': '500', 'null': 'True'}),
             'display_name': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True'}),
             'enabled': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'klass': ('django.db.models.fields.CharField', [], {'max_length': '500'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200', 'db_index': 'True'}),
-            'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 21, 0, 0)', 'db_index': 'True'})
+            'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 24, 0, 0)', 'db_index': 'True'})
+        },
+        u'notifier.groupnotify': {
+            'Meta': {'unique_together': "(('group', 'notification', 'backend'),)", 'object_name': 'GroupNotify'},
+            'backend': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['notifier.Backend']"}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 24, 0, 0)', 'db_index': 'True'}),
+            'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.Group']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'notification': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['notifier.Notification']"}),
+            'notify': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 24, 0, 0)', 'db_index': 'True'})
+        },
+        u'notifier.notification': {
+            'Meta': {'object_name': 'Notification'},
+            'backends': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['notifier.Backend']", 'symmetrical': 'False', 'blank': 'True'}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 24, 0, 0)', 'db_index': 'True'}),
+            'display_name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200', 'db_index': 'True'}),
+            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
+            'public': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 24, 0, 0)', 'db_index': 'True'})
         },
         u'notifier.sentnotification': {
             'Meta': {'object_name': 'SentNotification'},
-            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 21, 0, 0)', 'db_index': 'True'}),
+            'backend': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['notifier.Backend']"}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 24, 0, 0)', 'db_index': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'notification': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['notifier.Notification']"}),
-            'notifier': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['notifier.Notifier']"}),
             'success': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 21, 0, 0)', 'db_index': 'True'}),
+            'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 24, 0, 0)', 'db_index': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         },
         u'notifier.usernotify': {
-            'Meta': {'unique_together': "(('user', 'notification', 'notifier'),)", 'object_name': 'UserNotify'},
-            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 21, 0, 0)', 'db_index': 'True'}),
+            'Meta': {'unique_together': "(('user', 'notification', 'backend'),)", 'object_name': 'UserNotify'},
+            'backend': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['notifier.Backend']"}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 24, 0, 0)', 'db_index': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'notification': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['notifier.Notification']"}),
-            'notifier': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['notifier.Notifier']"}),
             'notify': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 21, 0, 0)', 'db_index': 'True'}),
+            'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 24, 0, 0)', 'db_index': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         }
     }

@@ -19,7 +19,7 @@ from django.contrib.auth.models import Permission
 from django.db.models.query import QuerySet
 
 # User
-from notifier.models import Notification, Notifier, UserNotify
+from notifier.models import Notification, Backend, UserNotify
 
 
 ###############################################################################
@@ -40,16 +40,18 @@ def clear_preferences(users):
 
 
 def create_notification(name, display_name=None,
-        permissions=None, notifiers=None, public=True):
+        permissions=None, backends=None, public=True):
 
     if not display_name:
         display_name = name
 
-    if not notifiers:
-        notifiers = Notifier.objects.filter(enabled=True)
+    if backends:
+        backends = _get_backend_queryset(backends)
+    else:
+        backends = Backend.objects.filter(enabled=True)
 
     if permissions:
-        permissions = get_permission_queryset(permissions)
+        permissions = _get_permission_queryset(permissions)
     else:
         permissions = []
 
@@ -59,19 +61,19 @@ def create_notification(name, display_name=None,
         n = Notification.objects.create(name=name, display_name=display_name,
             public=public)
         n.permissions.add(*permissions)
-        n.notifiers.add(*notifiers)
+        n.backends.add(*backends)
     else:
         n.name = name
         n.display_name = display_name
         n.public = public
         n.permissions = permissions
-        n.notifiers = notifiers
+        n.backends = backends
         n.save()
 
     return n
 
 
-def get_permission_queryset(permissions):
+def _get_permission_queryset(permissions):
     if (permissions and
             not isinstance(permissions, QuerySet)):
         if isinstance(permissions, Permission):
@@ -87,3 +89,21 @@ def get_permission_queryset(permissions):
             permissions = Permission.objects.filter(codename__in=permissions)
 
     return permissions
+
+
+def _get_backend_queryset(backends):
+    if (backends and
+            not isinstance(backends, QuerySet)):
+        if isinstance(backends, Backend):
+            backends = [backends]
+        else:
+            if isinstance(backends, basestring):
+                backends = [backends]
+            elif isinstance(backends, Iterable):
+                if not all(isinstance(x, basestring) for x in backends):
+                    raise TypeError
+            else:
+                raise TypeError
+            backends = Backends.objects.filter(name__in=backends)
+
+    return backends

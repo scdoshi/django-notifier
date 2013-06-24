@@ -24,7 +24,7 @@ from notifier import managers
 ###############################################################################
 ## Models
 ###############################################################################
-class Notifier(BaseModel):
+class Backend(BaseModel):
     """
     Entries for various delivery backends (SMS, Email)
     """
@@ -43,26 +43,26 @@ class Notifier(BaseModel):
     def __unicode__(self):
         return self.name
 
-    def _get_notifierclass(self):
+    def _get_backendclass(self):
         """
         Return the python class from the string value in `self.klass`
         """
         module, klass = self.klass.rsplit('.', 1)
         return getattr(import_module(module), klass)
-    notifierclass = property(_get_notifierclass)
+    backendclass = property(_get_backendclass)
 
     def send(self, user, notification, context=None):
         """
-        Send the notification to the specified user using this notifier method.
+        Send the notification to the specified user using this backend.
 
         returns Boolean according to success of delivery.
         """
 
-        notifierobject = self.notifierclass(notification)
-        sent_success = notifierobject.send(user, context)
+        backendobject = self.backendclass(notification)
+        sent_success = backendobject.send(user, context)
 
         SentNotification.objects.create(user=user, notification=notification,
-            notifier=self, success=sent_success)
+            backend=self, success=sent_success)
 
         return sent_success
 
@@ -84,9 +84,9 @@ class Notification(BaseModel):
     # the user prefs for this notification or see it in the UI
     permissions = models.ManyToManyField(Permission, blank=True)
 
-    # These are the notifier delivery methods that are allowed for this type of
+    # These are the backend methods that are allowed for this type of
     # notification
-    notifiers = models.ManyToManyField(Notifier, blank=True)
+    backends = models.ManyToManyField(Backend, blank=True)
 
     objects = managers.NotificationManager()
 
@@ -104,10 +104,10 @@ class Notification(BaseModel):
             return False
         return True
 
-    def get_notifiers(self, user):
+    def get_backends(self, user):
         """
-        Returns notifiers after checking `User` and `Group` preferences
-        as well as `notifier.enabled` flag.
+        Returns backends after checking `User` and `Group` preferences
+        as well as `backend.enabled` flag.
         """
         user_settings = self.usernotify_set.filter(user=user)
         group_filter = Q()
@@ -116,52 +116,52 @@ class Notification(BaseModel):
 
         group_settings = self.groupnotify_set.filter(group_filter)
 
-        notifiers = self.notifiers.filter(enabled=True)
+        backends = self.backends.filter(enabled=True)
 
-        remove_notifiers = []
-        for notifier in notifiers:
+        remove_backends = []
+        for backend in backends:
             try:
-                usernotify = user_settings.get(notifier=notifier)
+                usernotify = user_settings.get(backend=backend)
             except UserNotify.DoesNotExist:
                 try:
-                    group_settings.get(notifier=notifier, notify=True)
+                    group_settings.get(backend=backend, notify=True)
                 except GroupNotify.DoesNotExist:
-                    remove_notifiers.append(notifier.id)
+                    remove_backends.append(backend.id)
             else:
                 if not usernotify.notify:
-                    remove_notifiers.append(notifier.id)
+                    remove_backends.append(backend.id)
 
-        return notifiers.exclude(id__in=remove_notifiers)
+        return backends.exclude(id__in=remove_backends)
 
     def get_user_prefs(self, user):
         """
-        Return a dictionary of all available notifier delivery methods with True
+        Return a dictionary of all available backend methods with True
         or False values depending on preferences.
         """
-        all_notifiers = self.notifiers.filter(enabled=True)
-        selected_notifiers = self.get_notifiers(user)
+        all_backends = self.backends.filter(enabled=True)
+        selected_backends = self.get_backends(user)
 
-        notifier_dict = dict(zip(all_notifiers, [False] * len(all_notifiers)))
-        for notifier in all_notifiers:
-            if notifier in selected_notifiers:
-                notifier_dict[notifier] = True
+        backend_dict = dict(zip(all_backends, [False] * len(all_backends)))
+        for backend in all_backends:
+            if backend in selected_backends:
+                backend_dict[backend] = True
 
-        return notifier_dict
+        return backend_dict
 
     def update_user_prefs(self, user, prefs_dict):
         """
         Update or create a `UserNotify` instance as required
         """
-        for notifier, value in prefs_dict.items():
+        for backend, value in prefs_dict.items():
             try:
                 userpref = self.usernotify_set.get(
                     user=user,
-                    notifier=notifier)
+                    backend=backend)
             except UserNotify.DoesNotExist:
                 UserNotify.objects.create(
                     user=user,
                     notification=self,
-                    notifier=notifier,
+                    backend=backend,
                     notify=value)
                 return 'created'
             else:
@@ -175,8 +175,8 @@ class Notification(BaseModel):
             users = [users]
 
         for user in users:
-            for notifier in self.get_notifiers(user):
-                notifier.send(user, self, context)
+            for backend in self.get_backends(user):
+                backend.send(user, self, context)
 
 
 class GroupNotify(BaseModel):
@@ -187,14 +187,14 @@ class GroupNotify(BaseModel):
     """
     group = models.ForeignKey(Group)
     notification = models.ForeignKey(Notification)
-    notifier = models.ForeignKey(Notifier)
+    backend = models.ForeignKey(Backend)
     notify = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = ('group', 'notification', 'notifier')
+        unique_together = ('group', 'notification', 'backend')
 
     def __unicode__(self):
-        return '%s:%s:%s' % (self.group, self.notification, self.notifier)
+        return '%s:%s:%s' % (self.group, self.notification, self.backend)
 
 
 class UserNotify(BaseModel):
@@ -206,16 +206,16 @@ class UserNotify(BaseModel):
     """
     user = models.ForeignKey(User)
     notification = models.ForeignKey(Notification)
-    notifier = models.ForeignKey(Notifier)
+    backend = models.ForeignKey(Backend)
     notify = models.BooleanField(default=True)
 
     objects = managers.UserNotifyManager()
 
     class Meta:
-        unique_together = ('user', 'notification', 'notifier')
+        unique_together = ('user', 'notification', 'backend')
 
     def __unicode__(self):
-        return '%s:%s:%s' % (self.user, self.notification, self.notifier)
+        return '%s:%s:%s' % (self.user, self.notification, self.backend)
 
     def save(self, *args, **kwargs):
         if not self.notification.check_perms(self.user):
@@ -229,18 +229,18 @@ class SentNotification(BaseModel):
     """
     user = models.ForeignKey(User)
     notification = models.ForeignKey(Notification)
-    notifier = models.ForeignKey(Notifier)
+    backend = models.ForeignKey(Backend)
     success = models.BooleanField()
 
     def __unicode__(self):
-        return '%s:%s:%s' % (self.user, self.notification, self.notifier)
+        return '%s:%s:%s' % (self.user, self.notification, self.backend)
 
 
 ###############################################################################
 ## Signal Recievers
 ###############################################################################
-@receiver(pre_delete, sender=Notifier,
-    dispatch_uid='notifier.models.notifier_pre_delete')
-def notifier_pre_delete(sender, instance, **kwargs):
+@receiver(pre_delete, sender=Backend,
+    dispatch_uid='notifier.models.backend_pre_delete')
+def backend_pre_delete(sender, instance, **kwargs):
     raise PermissionDenied(
-        'Cannot delete notifier %s. Remove from settings.' % instance.name)
+        'Cannot delete backend %s. Remove from settings.' % instance.name)
