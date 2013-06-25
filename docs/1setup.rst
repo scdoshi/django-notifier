@@ -60,6 +60,5 @@ Setup
 Terminology
 ===========
 
-``Notification``:
-
-``Backend``:
+* ``Notification``: A message that can be sent from the system to users (payment declined, email verification).
+* ``Backend``: A way to send notifications to users (email, SMS etc.)

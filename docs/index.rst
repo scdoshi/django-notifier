@@ -1,11 +1,6 @@
-.. django-notifier documentation master file, created by
-   sphinx-quickstart on Sun May 26 15:04:16 2013.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-
+***************
 django-notifier
-===============
+***************
 
 *django-notifier* is a django app to send notifications and manage preferences and permissions per user and group.
 
@@ -24,7 +19,7 @@ Contents
    2use
    3backends
    4methods
-   5forms
+   5preferences
 
 
 Contribute / Report Errors
