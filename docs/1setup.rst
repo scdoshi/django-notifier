@@ -7,12 +7,13 @@ Installation
 
 Install via ``pip``.
 
+To download latest dev version:
+
 ::
 
     $ pip install git+git://github.com/scdoshi/django-notifier.git
 
-
-Coming to PyPI soon, after which it will be possible to install with
+From PyPI (latest release):
 
 ::
 
