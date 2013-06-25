@@ -24,7 +24,7 @@ The templates already have the User and the Site objects passed in as context va
         'var2': value2
     }
 
-    notifier.send('notification-name', [user1, user2], extra_context)
+    send_notification('notification-name', [user1, user2], extra_context)
 
 The EmailBackend can be extended if required to change behaviour.
 

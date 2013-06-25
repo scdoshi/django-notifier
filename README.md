@@ -5,7 +5,7 @@ Send notifications (Email, SMS etc) and manage preferences and permissions per u
 
 
 To register a notification:
-notifier.create_notification('test-notification')
+create_notification('test-notification')
 
 To send notifications:
-notifier.send('test-notification', [user1, user2, ..])
+send_notification('test-notification', [user1, user2, ..])

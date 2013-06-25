@@ -9,9 +9,7 @@ from django.contrib.auth.models import Permission
 from django.core import mail
 
 # User
-import notifier
-from notifier import _get_permission_queryset
-from notifier import models
+from notifier import shortcuts, models
 
 
 ###############################################################################
@@ -26,7 +24,7 @@ class PreferencesTests(TestCase):
             name='sms',
             enabled=True,
             description='SMS delivery method',
-            klass='notifier.methods.Delivery')
+            klass='notifier.backends.BaseBackend')
 
         self.test1_notification = models.Notification.objects.create(
             display_name='Test Notification 1',
@@ -141,28 +139,28 @@ class PermissionTests(TestCase):
 
 class UtilityFunctionTests(TestCase):
     def test1GetPermissionQueryset(self):
-        """Test the notifier._get_permission_queryset function."""
+        """Test the shortcuts._get_permission_queryset function."""
         permissions = Permission.objects.filter(id__in=[1, 2])
 
         # Compare querysets after converting to lists, becuase different
         # instance of same queryset will not test as equal.
-        resp = _get_permission_queryset(permissions)
+        resp = shortcuts._get_permission_queryset(permissions)
         # print resp
         self.assertEqual(list(resp), list(permissions),
             msg='Queryset input failed')
 
-        resp = _get_permission_queryset(permissions[0])
+        resp = shortcuts._get_permission_queryset(permissions[0])
         # print resp
         self.assertEqual(resp, [permissions.get(id=1)],
             msg='Single object input failed')
 
-        resp = _get_permission_queryset(
+        resp = shortcuts._get_permission_queryset(
             list(permissions.values_list('codename', flat=True)))
         # print resp
         self.assertEqual(list(resp), list(permissions),
             msg='Permission codename list input failed')
 
-        resp = _get_permission_queryset(permissions[0].codename)
+        resp = shortcuts._get_permission_queryset(permissions[0].codename)
         # print resp
         self.assertEqual(list(resp), list(permissions.filter(id=1)),
             msg='Permission codename input failed')
@@ -177,7 +175,7 @@ class EmailTests(TestCase):
 
         self.email_backend = models.Backend.objects.get(name='email')
 
-        self.test_notification = notifier.create_notification(
+        self.test_notification = shortcuts.create_notification(
             'test-notification',
             display_name='Test',
             permissions=None,  # No permissions required
@@ -193,7 +191,7 @@ class EmailTests(TestCase):
         )
 
     def test_send_notification(self):
-        notifier.send('test-notification', self.user1)
+        shortcuts.send_notification('test-notification', self.user1)
 
         # Test that one message has been sent.
         self.assertEqual(len(mail.outbox), 1)

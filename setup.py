@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 
-VERSION = __import__('version').get_version()
+VERSION = __import__('notifier').get_version()
 
 setup(
     name="django-notifier",

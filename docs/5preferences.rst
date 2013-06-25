@@ -42,8 +42,9 @@ django-notifier has a formset that includes a form for every notification along 
 There is a shrotcut method to clear all user preferences (set preferences back to default)
 
 ::
-
-    notifier.clear_preferences([user1, user2])
+    
+    from notifier.shortcuts import clear_preferences
+    clear_preferences([user1, user2])
 
 
 An example of customizing the formset in django templates:

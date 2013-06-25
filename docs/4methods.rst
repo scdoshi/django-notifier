@@ -2,10 +2,10 @@
 Methods
 *******
 
-.. autofunction:: notifier.create_notification
+.. autofunction:: notifier.shortcuts.create_notification
 
 
-.. autofunction:: notifier.send
+.. autofunction:: notifier.shortcuts.send_notification
 
 
-.. autofunction:: notifier.clear_preferences
+.. autofunction:: notifier.shortcuts.clear_preferences

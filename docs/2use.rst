@@ -11,8 +11,8 @@ Create Notification
 
     ::
 
-        import notifier
-        notifier.create_notification('card-declined')
+        from notifier.shortcuts import create_notification
+        create_notification('card-declined')
 
     This will create a notification called 'card-declined'.
 
@@ -35,6 +35,6 @@ Send Notification
 
 ::
 
-    import notifier
-    notifier.send('card-declined', [user1, user2])
+    from notifier.shortcuts import send_notification
+    send_notification('card-declined', [user1, user2])
 

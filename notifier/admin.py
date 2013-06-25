@@ -11,11 +11,11 @@ from notifier import models
 ###############################################################################
 ## Admin
 ###############################################################################
-class NotifierAdmin(admin.ModelAdmin):
+class BackendAdmin(admin.ModelAdmin):
     list_display = ('display_name', 'enabled')
     readonly_fields = ('name', 'display_name', 'description', 'klass')
     list_editable = ('enabled',)
-admin.site.register(models.Notifier, NotifierAdmin)
+admin.site.register(models.Backend, BackendAdmin)
 
 
 class NotificationAdmin(admin.ModelAdmin):

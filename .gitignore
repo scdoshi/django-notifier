@@ -3,6 +3,10 @@
 *.*~
 sftp-config*.json
 *.sass-cache
-*.egg-info
 
+# build package
+*.egg-info
+dist/
+
+# docs
 docs/_*
