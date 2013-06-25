@@ -12,7 +12,7 @@ from notifier.models import Notification
 ###############################################################################
 ## Forms
 ###############################################################################
-class NotificationForm(forms.Form):
+class NotifierForm(forms.Form):
     def __init__(self, user=None, notification=None, *args, **kwargs):
         if not user:
             # Use try/except?
@@ -21,7 +21,7 @@ class NotificationForm(forms.Form):
             # Use try/except?
             notification = kwargs['initial'].pop('notification')
 
-        super(NotificationForm, self).__init__(*args, **kwargs)
+        super(NotifierForm, self).__init__(*args, **kwargs)
 
         self.user = user
         self.notification = notification
@@ -32,7 +32,8 @@ class NotificationForm(forms.Form):
         for deliverymethod, value in self.prefs_dict.items():
             self.dm.add(deliverymethod)
             self.fields[deliverymethod.name] = forms.BooleanField(
-                required=False)
+                required=False
+            )
             self.fields[deliverymethod.name].initial = value
 
     def save(self, *args, **kwargs):
@@ -44,7 +45,7 @@ class NotificationForm(forms.Form):
 ###############################################################################
 ## Formset
 ###############################################################################
-class NotificationFormSet(BaseFormSet):
+class NotifierFormSet(BaseFormSet):
     def __init__(self, user, data=None, files=None, **kwargs):
         notifications = Notification.objects.get_user_notifications(user)
         kwargs['initial'] = []
@@ -53,14 +54,14 @@ class NotificationFormSet(BaseFormSet):
             kwargs['initial'].append(
                 {'notification': notification, 'user': user})
 
-        self.form = NotificationForm
+        self.form = NotifierForm
         self.extra = 0
         self.can_order = False
         self.can_delete = False
         self.max_num = 100  # Required for >=Dj1.4.5
         self.absolute_max = 100  # Required for >=Dj1.4.5
 
-        super(NotificationFormSet, self).__init__(data, files, **kwargs)
+        super(NotifierFormSet, self).__init__(data, files, **kwargs)
 
         self.dm = set()
         for form in self.forms:

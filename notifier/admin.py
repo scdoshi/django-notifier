@@ -24,16 +24,16 @@ class NotificationAdmin(admin.ModelAdmin):
 admin.site.register(models.Notification, NotificationAdmin)
 
 
-class GroupNotifyAdmin(admin.ModelAdmin):
+class GroupPrefsAdmin(admin.ModelAdmin):
     list_display = ('group', 'notification', 'notifier', 'notify')
     list_editable = ('notify',)
-admin.site.register(models.GroupNotify, GroupNotifyAdmin)
+admin.site.register(models.GroupPrefs, GroupPrefsAdmin)
 
 
-class UserNotifyAdmin(admin.ModelAdmin):
+class UserPrefsAdmin(admin.ModelAdmin):
     list_display = ('user', 'notification', 'notifier', 'notify')
     list_editable = ('notify',)
-admin.site.register(models.UserNotify, UserNotifyAdmin)
+admin.site.register(models.UserPrefs, UserPrefsAdmin)
 
 
 class SentNotifcationAdmin(admin.ModelAdmin):

@@ -19,26 +19,12 @@ from django.contrib.auth.models import Permission
 from django.db.models.query import QuerySet
 
 # User
-from notifier.models import Notification, Backend, UserNotify
+from notifier.models import Notification, Backend, UserPrefs
 
 
 ###############################################################################
 ## Code
 ###############################################################################
-def send(name, users, context=None):
-    try:
-        notification = Notification.objects.get(name=name)
-    except Notification.DoesNotExist:
-        # write debug message
-        pass
-    else:
-        notification.send(users, context)
-
-
-def clear_preferences(users):
-    return UserNotify.objects.remove_user_prefs(users)
-
-
 def create_notification(name, display_name=None,
         permissions=None, backends=None, public=True):
 
@@ -71,6 +57,20 @@ def create_notification(name, display_name=None,
         n.save()
 
     return n
+
+
+def send(name, users, context=None):
+    try:
+        notification = Notification.objects.get(name=name)
+    except Notification.DoesNotExist:
+        # write debug message
+        pass
+    else:
+        notification.send(users, context)
+
+
+def clear_preferences(users):
+    return UserPrefs.objects.remove_user_prefs(users)
 
 
 def _get_permission_queryset(permissions):
@@ -107,3 +107,20 @@ def _get_backend_queryset(backends):
             backends = Backends.objects.filter(name__in=backends)
 
     return backends
+
+
+VERSION = (0, 3, 0, 'f')  # following PEP 386
+# VERSION = (0, 5, 2, "a", "1")
+
+
+def get_version(short=False):
+    version = "%s.%s" % (VERSION[0], VERSION[1])
+    if short:
+        return version
+    if VERSION[2]:
+        version = "%s.%s" % (version, VERSION[2])
+    if VERSION[3] != "f":
+        version = "%s%s%s" % (version, VERSION[3], VERSION[4])
+    return version
+
+__version__ = get_version()

@@ -109,26 +109,26 @@ class Notification(BaseModel):
         Returns backends after checking `User` and `Group` preferences
         as well as `backend.enabled` flag.
         """
-        user_settings = self.usernotify_set.filter(user=user)
+        user_settings = self.userprefs_set.filter(user=user)
         group_filter = Q()
         for group in user.groups.all():
             group_filter = Q(group_filter | Q(group=group))
 
-        group_settings = self.groupnotify_set.filter(group_filter)
+        group_settings = self.groupprefs_set.filter(group_filter)
 
         backends = self.backends.filter(enabled=True)
 
         remove_backends = []
         for backend in backends:
             try:
-                usernotify = user_settings.get(backend=backend)
-            except UserNotify.DoesNotExist:
+                userprefs = user_settings.get(backend=backend)
+            except UserPrefs.DoesNotExist:
                 try:
                     group_settings.get(backend=backend, notify=True)
-                except GroupNotify.DoesNotExist:
+                except GroupPrefs.DoesNotExist:
                     remove_backends.append(backend.id)
             else:
-                if not usernotify.notify:
+                if not userprefs.notify:
                     remove_backends.append(backend.id)
 
         return backends.exclude(id__in=remove_backends)
@@ -150,15 +150,15 @@ class Notification(BaseModel):
 
     def update_user_prefs(self, user, prefs_dict):
         """
-        Update or create a `UserNotify` instance as required
+        Update or create a `UserPrefs` instance as required
         """
         for backend, value in prefs_dict.items():
             try:
-                userpref = self.usernotify_set.get(
+                userpref = self.userprefs_set.get(
                     user=user,
                     backend=backend)
-            except UserNotify.DoesNotExist:
-                UserNotify.objects.create(
+            except UserPrefs.DoesNotExist:
+                UserPrefs.objects.create(
                     user=user,
                     notification=self,
                     backend=backend,
@@ -179,7 +179,7 @@ class Notification(BaseModel):
                 backend.send(user, self, context)
 
 
-class GroupNotify(BaseModel):
+class GroupPrefs(BaseModel):
     """
     Per group notification settings
 
@@ -197,7 +197,7 @@ class GroupNotify(BaseModel):
         return '%s:%s:%s' % (self.group, self.notification, self.backend)
 
 
-class UserNotify(BaseModel):
+class UserPrefs(BaseModel):
     """
     Per user notification settings
 
@@ -209,7 +209,7 @@ class UserNotify(BaseModel):
     backend = models.ForeignKey(Backend)
     notify = models.BooleanField(default=True)
 
-    objects = managers.UserNotifyManager()
+    objects = managers.UserPrefsManager()
 
     class Meta:
         unique_together = ('user', 'notification', 'backend')
@@ -220,7 +220,7 @@ class UserNotify(BaseModel):
     def save(self, *args, **kwargs):
         if not self.notification.check_perms(self.user):
             raise PermissionDenied
-        super(UserNotify, self).save(*args, **kwargs)
+        super(UserPrefs, self).save(*args, **kwargs)
 
 
 class SentNotification(BaseModel):

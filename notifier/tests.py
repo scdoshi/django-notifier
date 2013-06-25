@@ -55,7 +55,7 @@ class PreferencesTests(TestCase):
 
         self.user1.groups.add(self.group1)
 
-        models.GroupNotify.objects.create(
+        models.GroupPrefs.objects.create(
             group=self.group1,
             notification=self.test1_notification,
             backend=self.email_backend,
@@ -75,7 +75,7 @@ class PreferencesTests(TestCase):
 
     def test2UserPreference(self):
         """Test if User preference supercedes group preference"""
-        models.UserNotify.objects.create(
+        models.UserPrefs.objects.create(
             user=self.user1,
             notification=self.test1_notification,
             backend=self.email_backend,
@@ -185,7 +185,7 @@ class EmailTests(TestCase):
             public=True
         )
 
-        models.UserNotify.objects.create(
+        models.UserPrefs.objects.create(
             user=self.user1,
             notification=self.test_notification,
             backend=self.email_backend,
@@ -195,7 +195,6 @@ class EmailTests(TestCase):
     def test_send_notification(self):
         notifier.send('test-notification', self.user1)
 
-        print mail.outbox
         # Test that one message has been sent.
         self.assertEqual(len(mail.outbox), 1)
 

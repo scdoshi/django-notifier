@@ -39,7 +39,7 @@ class NotificationManager(models.Manager):
         return {'created': created, 'updated': updated}
 
 
-class UserNotifyManager(models.Manager):
+class UserPrefsManager(models.Manager):
     def remove_user_prefs(self, users):
         """
         Set to default by removing all User specific notification prefs.

@@ -50,8 +50,8 @@ class Migration(SchemaMigration):
         ))
         db.create_unique(m2m_table_name, ['notification_id', 'backend_id'])
 
-        # Adding model 'GroupNotify'
-        db.create_table(u'notifier_groupnotify', (
+        # Adding model 'GroupPrefs'
+        db.create_table(u'notifier_groupprefs', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 24, 0, 0), db_index=True)),
             ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 24, 0, 0), db_index=True)),
@@ -60,13 +60,13 @@ class Migration(SchemaMigration):
             ('backend', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['notifier.Backend'])),
             ('notify', self.gf('django.db.models.fields.BooleanField')(default=True)),
         ))
-        db.send_create_signal(u'notifier', ['GroupNotify'])
+        db.send_create_signal(u'notifier', ['GroupPrefs'])
 
-        # Adding unique constraint on 'GroupNotify', fields ['group', 'notification', 'backend']
-        db.create_unique(u'notifier_groupnotify', ['group_id', 'notification_id', 'backend_id'])
+        # Adding unique constraint on 'GroupPrefs', fields ['group', 'notification', 'backend']
+        db.create_unique(u'notifier_groupprefs', ['group_id', 'notification_id', 'backend_id'])
 
-        # Adding model 'UserNotify'
-        db.create_table(u'notifier_usernotify', (
+        # Adding model 'UserPrefs'
+        db.create_table(u'notifier_userprefs', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 24, 0, 0), db_index=True)),
             ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2013, 6, 24, 0, 0), db_index=True)),
@@ -75,10 +75,10 @@ class Migration(SchemaMigration):
             ('backend', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['notifier.Backend'])),
             ('notify', self.gf('django.db.models.fields.BooleanField')(default=True)),
         ))
-        db.send_create_signal(u'notifier', ['UserNotify'])
+        db.send_create_signal(u'notifier', ['UserPrefs'])
 
-        # Adding unique constraint on 'UserNotify', fields ['user', 'notification', 'backend']
-        db.create_unique(u'notifier_usernotify', ['user_id', 'notification_id', 'backend_id'])
+        # Adding unique constraint on 'UserPrefs', fields ['user', 'notification', 'backend']
+        db.create_unique(u'notifier_userprefs', ['user_id', 'notification_id', 'backend_id'])
 
         # Adding model 'SentNotification'
         db.create_table(u'notifier_sentnotification', (
@@ -94,11 +94,11 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        # Removing unique constraint on 'UserNotify', fields ['user', 'notification', 'backend']
-        db.delete_unique(u'notifier_usernotify', ['user_id', 'notification_id', 'backend_id'])
+        # Removing unique constraint on 'UserPrefs', fields ['user', 'notification', 'backend']
+        db.delete_unique(u'notifier_userprefs', ['user_id', 'notification_id', 'backend_id'])
 
-        # Removing unique constraint on 'GroupNotify', fields ['group', 'notification', 'backend']
-        db.delete_unique(u'notifier_groupnotify', ['group_id', 'notification_id', 'backend_id'])
+        # Removing unique constraint on 'GroupPrefs', fields ['group', 'notification', 'backend']
+        db.delete_unique(u'notifier_groupprefs', ['group_id', 'notification_id', 'backend_id'])
 
         # Deleting model 'Backend'
         db.delete_table(u'notifier_backend')
@@ -112,11 +112,11 @@ class Migration(SchemaMigration):
         # Removing M2M table for field backends on 'Notification'
         db.delete_table(db.shorten_name(u'notifier_notification_backends'))
 
-        # Deleting model 'GroupNotify'
-        db.delete_table(u'notifier_groupnotify')
+        # Deleting model 'GroupPrefs'
+        db.delete_table(u'notifier_groupprefs')
 
-        # Deleting model 'UserNotify'
-        db.delete_table(u'notifier_usernotify')
+        # Deleting model 'UserPrefs'
+        db.delete_table(u'notifier_userprefs')
 
         # Deleting model 'SentNotification'
         db.delete_table(u'notifier_sentnotification')
@@ -170,8 +170,8 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200', 'db_index': 'True'}),
             'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 24, 0, 0)', 'db_index': 'True'})
         },
-        u'notifier.groupnotify': {
-            'Meta': {'unique_together': "(('group', 'notification', 'backend'),)", 'object_name': 'GroupNotify'},
+        u'notifier.groupprefs': {
+            'Meta': {'unique_together': "(('group', 'notification', 'backend'),)", 'object_name': 'GroupPrefs'},
             'backend': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['notifier.Backend']"}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 24, 0, 0)', 'db_index': 'True'}),
             'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.Group']"}),
@@ -201,8 +201,8 @@ class Migration(SchemaMigration):
             'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 24, 0, 0)', 'db_index': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         },
-        u'notifier.usernotify': {
-            'Meta': {'unique_together': "(('user', 'notification', 'backend'),)", 'object_name': 'UserNotify'},
+        u'notifier.userprefs': {
+            'Meta': {'unique_together': "(('user', 'notification', 'backend'),)", 'object_name': 'UserPrefs'},
             'backend': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['notifier.Backend']"}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 6, 24, 0, 0)', 'db_index': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
