@@ -59,7 +59,7 @@ def create_notifications(app, **kwargs):
 
     for installed_app in settings.INSTALLED_APPS:
         try:
-            import_module(installed_app + '.notifiers')
+            import_module(installed_app + '.notifications')
         except ImportError:
             pass
 
