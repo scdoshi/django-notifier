@@ -47,6 +47,9 @@ There is a shrotcut method to clear all user preferences (set preferences back t
     clear_preferences([user1, user2])
 
 
+.. autofunction:: notifier.shortcuts.clear_preferences
+
+
 An example of customizing the formset in django templates:
 
 ::

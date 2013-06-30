@@ -18,7 +18,7 @@ Contents
    1setup
    2use
    3backends
-   4methods
+   4notifications
    5preferences
 
 
