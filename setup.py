@@ -9,7 +9,7 @@ setup(
     author='Siddharth Doshi',
     author_email='scdoshi@gmail.com',
     description=("User and Group Notifications for Django"),
-    long_description=open('README.md').read(),
+    long_description=open('README.rst').read(),
     packages=find_packages(),
     url="http://github.com/scdoshi/django-notifier/",
     license='Simplified BSD',
