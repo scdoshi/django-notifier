@@ -1,12 +1,7 @@
 # App
 Django==1.5.1
 psycopg2==2.5
-South==0.8.1
-argparse==1.2.1
-distribute==0.6.34
-
-django-bits==0.2
+django-bits>=0.3
 
 # Docs
-Sphinx==1.2b1
 docutils==0.10
