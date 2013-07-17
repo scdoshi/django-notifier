@@ -16,7 +16,7 @@ class NotificationManager(models.Manager):
     def get_user_notifications(self, user):
         ret_list = []
         for notification in self.filter(public=True):
-            if notification.deliverymethods.all() and notification.check_perms(user):
+            if notification.backends.all() and notification.check_perms(user):
                 ret_list.append(notification)
         return ret_list
 
