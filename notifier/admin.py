@@ -25,18 +25,18 @@ admin.site.register(models.Notification, NotificationAdmin)
 
 
 class GroupPrefsAdmin(admin.ModelAdmin):
-    list_display = ('group', 'notification', 'notifier', 'notify')
+    list_display = ('group', 'notification', 'backend', 'notify')
     list_editable = ('notify',)
 admin.site.register(models.GroupPrefs, GroupPrefsAdmin)
 
 
 class UserPrefsAdmin(admin.ModelAdmin):
-    list_display = ('user', 'notification', 'notifier', 'notify')
+    list_display = ('user', 'notification', 'backend', 'notify')
     list_editable = ('notify',)
 admin.site.register(models.UserPrefs, UserPrefsAdmin)
 
 
 class SentNotifcationAdmin(admin.ModelAdmin):
-    list_display = ('user', 'notification', 'notifier', 'success')
-    readonly_fields = ('user', 'notification', 'notifier', 'success')
+    list_display = ('user', 'notification', 'backend', 'success')
+    readonly_fields = ('user', 'notification', 'backend', 'success')
 admin.site.register(models.SentNotification, SentNotifcationAdmin)
