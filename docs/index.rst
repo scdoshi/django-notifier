@@ -12,7 +12,7 @@ The general idea is to reduce the overhead of setting up notifications for diffe
 Dependecies
 ===========
 
-django-notifier supports on Django 1.4 and later on Python 2.7 and later. Earlier versions of Python and Python 3 have not been tested.
+django-notifier supports Django 1.4 and later on Python 2.7 and later. Earlier versions of Python and Python 3 have not been tested.
 
 
 Contents
