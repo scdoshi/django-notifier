@@ -4,6 +4,7 @@ django-notifier
 
 Send notifications (Email, SMS etc) and manage preferences and permissions per user and group.
 
+See full documentation at http://django-notifier.rtfd.org/
 
 To register a notification::
 

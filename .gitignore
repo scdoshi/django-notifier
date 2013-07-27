@@ -7,6 +7,7 @@ sftp-config*.json
 # build package
 *.egg-info
 dist/
+build/
 
 # docs
 docs/_*

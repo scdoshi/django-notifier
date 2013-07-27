@@ -9,6 +9,12 @@ It can support multiple methods of sending notifications and provides methods to
 The general idea is to reduce the overhead of setting up notifications for different actions (payment processed, new membership, daily update) and making it easy to use the same backend for all kinds of notifications.
 
 
+Dependecies
+===========
+
+django-notifier supports on Django 1.4 and later on Python 2.7 and later. Earlier versions of Python and Python 3 have not been tested.
+
+
 Contents
 ========
 
