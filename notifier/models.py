@@ -13,6 +13,7 @@ from django.db import models
 from django.db.models import Q
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
+from django.utils.timezone import now
 
 # User
 from notifier import managers
@@ -23,14 +24,14 @@ from notifier import managers
 ###############################################################################
 class BaseModel(models.Model):
     """Abstract base class with auto-populated created and updated fields. """
-    created = models.DateTimeField(default=usetz_now, db_index=True)
-    updated = models.DateTimeField(default=usetz_now, db_index=True)
+    created = models.DateTimeField(default=now, db_index=True)
+    updated = models.DateTimeField(default=now, db_index=True)
 
     class Meta:
         abstract = True
 
     def save(self, *args, **kwargs):
-        self.updated = usetz_now()
+        self.updated = now()
         super(BaseModel, self).save(*args, **kwargs)
 
 
