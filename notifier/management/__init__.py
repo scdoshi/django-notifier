@@ -18,6 +18,7 @@ except ImportError:
 # User
 from notifier.models import Backend
 from notifier import settings as notifier_settings
+import notifier
 
 
 ###############################################################################
@@ -31,7 +32,7 @@ def create_backends(app, **kwargs):
     not suppossed to be modified by user. They will be over-written on restart.
     """
 
-    if not app == 'notifier':
+    if not app == notifier.models:
         return
 
     for klass in notifier_settings.BACKEND_CLASSES:
