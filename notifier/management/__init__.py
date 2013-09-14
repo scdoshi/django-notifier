@@ -16,6 +16,7 @@ except ImportError:
     South = False
 
 # User
+import notifier
 from notifier.models import Backend
 from notifier import settings as notifier_settings
 
@@ -31,7 +32,7 @@ def create_backends(app, **kwargs):
     not suppossed to be modified by user. They will be over-written on restart.
     """
 
-    if not app == 'notifier':
+    if South and not app == 'notifier':
         return
 
     for klass in notifier_settings.BACKEND_CLASSES:
@@ -54,7 +55,7 @@ def create_notifications(app, **kwargs):
     in INSTALLED_APPS
     """
 
-    if not app == 'notifier':
+    if South and not app == 'notifier':
         return
 
     for installed_app in settings.INSTALLED_APPS:
@@ -65,12 +66,22 @@ def create_notifications(app, **kwargs):
 
 
 if South:
-    post_migrate.connect(create_backends,
-        dispatch_uid="notifier.management.create_backends")
-    post_migrate.connect(create_notifications,
-        dispatch_uid="notifier.management.create_notifications")
+    post_migrate.connect(
+        create_backends,
+        dispatch_uid="notifier.management.create_backends"
+    )
+    post_migrate.connect(
+        create_notifications,
+        dispatch_uid="notifier.management.create_notifications",
+    )
 else:
-    post_syncdb.connect(create_backends,
-        dispatch_uid="notifier.management.create_backends")
-    post_syncdb.connect(create_notifications,
-        dispatch_uid="notifier.management.create_notifications")
+    post_syncdb.connect(
+        create_backends,
+        dispatch_uid="notifier.management.create_backends",
+        sender=notifier.models
+    )
+    post_syncdb.connect(
+        create_notifications,
+        dispatch_uid="notifier.management.create_notifications",
+        sender=notifier.models
+    )

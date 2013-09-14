@@ -2,6 +2,13 @@
 import sys, os
 sys.path.insert(0, os.path.abspath(os.path.split(os.path.abspath(__file__))[0] + '/../..'))
 
+# Is South installed?
+try:
+    import south
+    South = True
+except ImportError:
+    South = False
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -128,10 +135,12 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 
     'django_extensions',  # For shell_plus
-
-    'south',
-    'notifier',
 )
+
+if South:
+    INSTALLED_APPS += ('south',)
+
+INSTALLED_APPS += ('notifier',)
 
 SKIP_SOUTH_TESTS = True
 
