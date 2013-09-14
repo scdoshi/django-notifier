@@ -11,6 +11,7 @@ setup(
     description=("User and Group Notifications for Django"),
     long_description=open('README.rst').read(),
     packages=find_packages(),
+    include_package_data=True,
     url="http://github.com/scdoshi/django-notifier/",
     license='Simplified BSD',
     classifiers=[
