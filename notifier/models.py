@@ -49,7 +49,7 @@ class Backend(BaseModel):
 
     # The klass value defines the class to be used to send the notification.
     klass = models.CharField(max_length=500,
-        help_text='Example: notifier.methods.Backend')
+        help_text='Example: notifier.backends.EmailBackend')
 
     def __unicode__(self):
         return self.name

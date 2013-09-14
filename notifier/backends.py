@@ -21,7 +21,6 @@ class BaseBackend(object):
     description = None
 
     def __init__(self, notification, *args, **kwargs):
-        # self.notifier = Notifier.objects.get(name=self.name)
         self.notification = notification
         self.template = ('/notifier/%s_%s.txt' % (notification.name, self.name))
 
