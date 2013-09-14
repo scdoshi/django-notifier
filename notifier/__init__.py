@@ -10,7 +10,7 @@ send_notification('test-notif', [user1, user2, ..])
 
 """
 
-VERSION = (0, 6, 0, 'f')  # following PEP 386
+VERSION = (0, 6, 1, 'f')  # following PEP 386
 # VERSION = (0, 5, 2, "a", "1")
 
 
