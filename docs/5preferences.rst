@@ -39,7 +39,7 @@ django-notifier has a formset that includes a form for every notification along 
     notifier.forms.NotifierFormSet
 
 
-There is a shrotcut method to clear all user preferences (set preferences back to default)
+There is a shortcut method to clear all user preferences (set preferences back to default)
 
 ::
     

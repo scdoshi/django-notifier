@@ -1,13 +1,13 @@
 # App
-Django==1.5.1
+Django==1.5.4
 psycopg2==2.5
-South==0.8.1
+South==0.8.2
 argparse==1.2.1
 distribute==0.6.34
 
 # Demo
 ipython==0.13.2
-django-extensions==1.1.1
+django-extensions==1.2.1
 
 # Docs
 Sphinx==1.2b1
