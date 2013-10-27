@@ -5,7 +5,7 @@
 from collections import Iterable
 
 # Django
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Group, Permission, User
 from django.db.models.query import QuerySet
 
 # User
@@ -17,6 +17,18 @@ from notifier.models import Notification, Backend, UserPrefs
 ###############################################################################
 def create_notification(name, display_name=None,
         permissions=None, backends=None, public=True):
+    """
+    Arguments
+
+        :name: notification name, unique (string)
+        :display_name: notification display name, can be non-unique (string)
+        :permissions: list of permission names or objects
+        :backends: list of backend names or objects
+        :public: (boolean)
+
+    Returns
+        Notification object
+    """
 
     if not display_name:
         display_name = name
@@ -50,16 +62,55 @@ def create_notification(name, display_name=None,
 
 
 def send_notification(name, users, context=None):
-    try:
-        notification = Notification.objects.get(name=name)
-    except Notification.DoesNotExist:
-        # write debug message
-        pass
-    else:
-        notification.send(users, context)
+    """
+    Arguments
+
+        :name: notification name (string)
+        :users: user object or list of user objects
+        :context: additional context for notification templates (dict)
+
+    Returns
+
+        None
+    """
+    notification = Notification.objects.get(name=name)
+    return notification.send(users, context)
+
+
+def update_preferences(name, user, prefs_dict):
+    """
+    Arguments
+
+        :name: notification name (string)
+        :user: user or group object
+        :prefs_dict: dict with backend obj or name as key with a boolean value.
+
+            e.g. {'email': True, 'sms': False}, {email_backend_obj: True, sms_backend_obj: False}
+
+    Returns
+
+        dict with backend names that were created or updated. values that do not require change are skipped
+
+        e.g. {'email': 'created', 'sms': updated}
+    """
+    notification = Notification.objects.get(name=name)
+
+    if isinstance(user, User):
+        return notification.update_user_prefs(user, prefs_dict)
+    elif isinstance(user, Group):
+        return notification.update_group_prefs(user, prefs_dict)
 
 
 def clear_preferences(users):
+    """
+    Arguments
+
+        :users: user object or list of user object
+
+    Returns
+
+        None
+    """
     return UserPrefs.objects.remove_user_prefs(users)
 
 

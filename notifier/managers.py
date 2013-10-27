@@ -27,17 +27,6 @@ class NotificationManager(models.Manager):
                 return_dict[notification] = notification.get_user_prefs(user)
         return return_dict
 
-    def update_user_prefs(self, user, update_dict):
-        created = 0
-        updated = 0
-        for notification, prefs in update_dict.items():
-            ret_value = notification.update_user_prefs(user, prefs)
-            if ret_value == 'created':
-                created += 1
-            elif ret_value == 'updated':
-                updated += 1
-        return {'created': created, 'updated': updated}
-
 
 class UserPrefsManager(models.Manager):
     def remove_user_prefs(self, users):

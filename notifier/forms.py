@@ -26,19 +26,19 @@ class NotifierForm(forms.Form):
         self.user = user
         self.notification = notification
         self.prefs_dict = notification.get_user_prefs(user)
-        self.dm = set()
+        self.backends_included = set()
         self.title = notification.display_name
 
-        for deliverymethod, value in self.prefs_dict.items():
-            self.dm.add(deliverymethod)
-            self.fields[deliverymethod.name] = forms.BooleanField(
+        for backend, value in self.prefs_dict.items():
+            self.backends_included.add(backend)
+            self.fields[backend.name] = forms.BooleanField(
                 required=False
             )
-            self.fields[deliverymethod.name].initial = value
+            self.fields[backend.name].initial = value
 
     def save(self, *args, **kwargs):
-        for deliverymethod, value in self.prefs_dict.items():
-            self.prefs_dict[deliverymethod] = self.cleaned_data[deliverymethod.name]
+        for backend, value in self.prefs_dict.items():
+            self.prefs_dict[backend] = self.cleaned_data[backend.name]
         return self.notification.update_user_prefs(self.user, self.prefs_dict)
 
 
@@ -63,9 +63,11 @@ class NotifierFormSet(BaseFormSet):
 
         super(NotifierFormSet, self).__init__(data, files, **kwargs)
 
-        self.dm = set()
+        # This is a list of backends used in the form for use in the template.
+        self.backends_included = set()
         for form in self.forms:
-            self.dm = self.dm.union(form.dm)
+            self.backends_included = self.backends_included.union(form.backends_included)
+        self.dm = self.backends_included  # aliased for backwards compatibility
 
     def save(self, *args, **kwargs):
         for form in self.forms:

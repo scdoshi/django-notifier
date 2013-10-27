@@ -17,6 +17,7 @@ Group preferences are stored in the ``GroupPrefs`` model.
     notifier.models.GroupPrefs
 
 
+
 User Preferences
 ================
 
@@ -29,17 +30,31 @@ User preferences are stored in the ``UserPrefs`` model.
     notifier.models.UserPrefs
 
 
-Form
-----
-
-django-notifier has a formset that includes a form for every notification along with checkboxes for every backend for that notification. This can be used in a view to allow the users to set notification preferences.
+Set Preferences
+===============
 
 ::
 
-    notifier.forms.NotifierFormSet
+    # User
+    notification_obj.update_user_prefs(user_obj, {'email': True, 'backend2': False})
+    # Group
+    notification_obj.update_group_preference(group_obj, {'email': True, 'backend2': False})
+
+    # or use a shortcut method
+    from notifier.shortcuts import update_preferences
+    # User
+    update_preferences('notification-name', user_obj, {'email': True, 'backend2': False})
+    # Group
+    update_preferences('notification-name', group_obj, {'email': True, 'backend2': False})
 
 
-There is a shortcut method to clear all user preferences (set preferences back to default)
+.. autofunction:: notifier.shortcuts.update_preferences
+
+
+Clear Preferences
+=================
+
+There is a shortcut method to clear all *user* preferences (set preferences back to default)
 
 ::
     
@@ -48,6 +63,16 @@ There is a shortcut method to clear all user preferences (set preferences back t
 
 
 .. autofunction:: notifier.shortcuts.clear_preferences
+
+
+Form
+====
+
+django-notifier has a formset that includes a form for every notification along with checkboxes for every backend for that notification. This can be used in a view to allow the users to set notification preferences.
+
+::
+
+    notifier.forms.NotifierFormSet
 
 
 An example of customizing the formset in django templates:

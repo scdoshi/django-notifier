@@ -26,6 +26,7 @@ Contents
    3backends
    4notifications
    5preferences
+   9changelog
 
 
 Contribute / Report Errors

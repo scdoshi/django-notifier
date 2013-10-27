@@ -163,23 +163,59 @@ class Notification(BaseModel):
         """
         Update or create a `UserPrefs` instance as required
         """
+        result = {}
         for backend, value in prefs_dict.items():
+            if not isinstance(backend, Backend):
+                backend = Backend.objects.get(name=backend)
+
             try:
                 userpref = self.userprefs_set.get(
                     user=user,
-                    backend=backend)
+                    backend=backend
+                )
             except UserPrefs.DoesNotExist:
                 UserPrefs.objects.create(
                     user=user,
                     notification=self,
                     backend=backend,
-                    notify=value)
-                return 'created'
+                    notify=value
+                )
+                result[backend.name] = 'created'
             else:
                 if userpref.notify != value:
                     userpref.notify = value
                     userpref.save()
-                    return 'updated'
+                    result[backend.name] = 'updated'
+        return result
+
+    def update_group_prefs(self, group, prefs_dict):
+        """
+        Update or create a `GroupPrefs` instance as required
+        """
+        result = {}
+        for backend, value in prefs_dict.items():
+            if not isinstance(backend, Backend):
+                backend = Backend.objects.get(name=backend)
+
+            try:
+                grouppref = self.groupprefs_set.get(
+                    group=group,
+                    backend=backend
+                )
+            except GroupPrefs.DoesNotExist:
+                GroupPrefs.objects.create(
+                    group=group,
+                    notification=self,
+                    backend=backend,
+                    notify=value
+                )
+                result[backend.name] = 'created'
+            else:
+                if grouppref.notify != value:
+                    grouppref.notify = value
+                    grouppref.save()
+                    result[backend.name] = 'updated'
+        return result
 
     def send(self, users, context=None):
         if not isinstance(users, Iterable):
@@ -242,6 +278,7 @@ class SentNotification(BaseModel):
     notification = models.ForeignKey(Notification)
     backend = models.ForeignKey(Backend)
     success = models.BooleanField()
+    read = models.BooleanField(default=False)
 
     def __unicode__(self):
         return '%s:%s:%s' % (self.user, self.notification, self.backend)
