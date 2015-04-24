@@ -52,7 +52,7 @@ Setup
     
     ::
 
-        $ python manage.py syndb
+        $ python manage.py syncdb
 
     If using South:
 
