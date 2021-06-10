@@ -1,5 +1,5 @@
 # App
-Django==1.5.4
+Django==2.2.24
 psycopg2==2.5
 South==0.8.2
 argparse==1.2.1
