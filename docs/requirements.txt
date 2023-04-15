@@ -1,5 +1,5 @@
 # App
-Django==1.5.1
+Django==2.2.28
 psycopg2==2.5
 django-bits>=0.3
 
